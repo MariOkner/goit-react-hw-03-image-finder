@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const SearchbarHeader = styled.header`
+export const SearchBarHTML = styled.header`
   top: 0;
   left: 0;
   position: sticky;
@@ -19,7 +19,7 @@ export const SearchbarHeader = styled.header`
     0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
 `;
 
-export const Form = styled.form`
+export const FormHTML = styled.form`
   display: flex;
   align-items: center;
   width: 100%;
@@ -29,7 +29,7 @@ export const Form = styled.form`
   overflow: hidden;
 `;
 
-export const Button = styled.button`
+export const ButtonHTML = styled.button`
   display: inline-block;
   width: 48px;
   height: 48px;
@@ -48,7 +48,7 @@ export const Button = styled.button`
   }
 `;
 
-export const ButtonLabel = styled.span`
+export const ButtonLabelHTML = styled.span`
   position: absolute;
   width: 1px;
   height: 1px;
@@ -60,7 +60,7 @@ export const ButtonLabel = styled.span`
   border: 0;
 `;
 
-export const Input = styled.input`
+export const InputHTML = styled.input`
   display: inline-block;
   width: 100%;
   font: inherit;
@@ -75,4 +75,3 @@ export const Input = styled.input`
     font-size: 18px;
   }
 `;
-

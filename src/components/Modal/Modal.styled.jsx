@@ -1,6 +1,6 @@
 import styled from '@emotion/styled';
 
-export const Overlay = styled.div`
+export const OverlayHTML = styled.div`
   position: fixed;
   top: 0;
   left: 0;
@@ -13,7 +13,7 @@ export const Overlay = styled.div`
   z-index: 1200;
 `;
 
-export const ModalContent = styled.div`
+export const ContentHTML = styled.div`
   position: absolute;
   top: 50%;
   left: 50%;

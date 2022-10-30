@@ -11,21 +11,21 @@ const fetchImages = async (query, page) => {
   const response = await axios.get(url);
 
   if (response.status !== 200) {
-    throw new Error(response.status);
+    throw new Error('Backend error');
   }
 
   if (response.data.totalHits === 0) {
-    throw new Error(response.status);
+    throw new Error('No images');
   }
 
   return {
     hits: response.data.hits,
-    totalPages: Math.ceil(response.data.totalHits / IMAGE_PER_PAGE)
+    totalPages: Math.ceil(response.data.totalHits / IMAGE_PER_PAGE),
   };
-}
+};
 
 const helpers = {
-    fetchImages,
+  fetchImages,
 };
 
 export default helpers;

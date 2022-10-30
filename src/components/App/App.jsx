@@ -2,35 +2,29 @@ import { Component } from 'react';
 import helpers from '../../helpers';
 
 import { SearchBar } from '../SearchBar/SearchBar';
-// import { ImageGallery } from '../ImageGallery/ImageGallery'
+import { ImageGallery } from '../ImageGallery/ImageGallery';
+import { Button } from '../Button/Button';
 // import { Loader } from '../Loader/Loader'
-// import { Modal } from '../Modal/Modal';
+import { Modal } from '../Modal/Modal';
 
-import { Container } from './App.styled';
+import { ContainerHTML } from './App.styled';
 
 export class App extends Component {
   static propTypes = {};
 
   constructor(props) {
     super(props);
-    this.page = 1;
+    this.page = null;
+    this.query = null;
   }
 
   state = {
     images: [],
     isLoading: false,
-    showModal: false,
+    showModal: true,
     hasMoreImages: false,
     error: null,
   };
-
-  // async componentDidUbdate(prevProps, prevState) {
-  //   // const prevName = prevProps.images;
-  //   // const nextName = prevProps.images;
-
-  //   this.setState({ isLoading: true });
-
-  // }
 
   handleImageFormSubmit = async query => {
     if (query.trim() === '') {
@@ -39,12 +33,25 @@ export class App extends Component {
     }
 
     this.page = 1;
+    this.query = query;
+    this.fetchImages();
+  };
+
+  handleButtonClick = () => {
+    this.page += 1;
+    this.fetchImages();
+  };
+
+  fetchImages = async () => {
     this.setState({ isLoading: true });
     this.setState({ hasMoreImages: false });
     this.setState({ error: null });
 
     try {
-      const { hits, totalPages } = await helpers.fetchImages(query, 1);
+      const { hits, totalPages } = await helpers.fetchImages(
+        this.query,
+        this.page
+      );
       this.setState({
         images: hits.map(({ id, webformatURL, largeImageURL }) => {
           return {
@@ -70,20 +77,26 @@ export class App extends Component {
   };
 
   render() {
-    const { images, isLoading, error } = this.state;
+    const { images, isLoading, showModal, hasMoreImages, error } = this.state;
 
     return (
-      <Container>
-        {error && <p>Whoops, something went wrong: {error.message}</p>}
-
+      <ContainerHTML>
         <SearchBar handleSubmit={this.handleImageFormSubmit}></SearchBar>
 
-        {/* {isLoading ? <p>Loading...</p> : <ImageGallery images={images}></ImageGallery>} */}
+        {error && <p>{error.message}</p>}
+
+        {isLoading ? (
+          <p>Loading...</p>
+        ) : (
+          <ImageGallery images={images}></ImageGallery>
+        )}
+
+        {hasMoreImages && <Button handleClick={this.handleButtonClick} />}
 
         {/* <Loader /> */}
 
-        {/* {this.state.showModal && <Modal />} */}
-      </Container>
+        {showModal && <Modal onClose={this.toggleModal}></Modal>}
+      </ContainerHTML>
     );
   }
 }
