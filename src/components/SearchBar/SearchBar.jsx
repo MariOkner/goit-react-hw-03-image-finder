@@ -1,3 +1,4 @@
+import PropTypes from 'prop-types';
 import {
   SearchBarHTML,
   FormHTML,
@@ -32,4 +33,8 @@ export const SearchBar = ({ handleSubmit }) => {
       </FormHTML>
     </SearchBarHTML>
   );
+};
+
+SearchBar.propTypes = {
+  handleSubmit: PropTypes.func.isRequired,
 };
