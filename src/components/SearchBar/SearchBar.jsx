@@ -1,4 +1,6 @@
 import PropTypes from 'prop-types';
+import { BiSearchAlt } from 'react-icons/bi';
+
 import {
   SearchBarHTML,
   FormHTML,
@@ -19,8 +21,8 @@ export const SearchBar = ({ handleSubmit }) => {
     <SearchBarHTML>
       <FormHTML onSubmit={onSubmit}>
         <ButtonHTML type="submit">
+          <BiSearchAlt style={{ width: 32, height: 32 }} />
           <ButtonLabelHTML>Search</ButtonLabelHTML>
-          SE
         </ButtonHTML>
 
         <InputHTML

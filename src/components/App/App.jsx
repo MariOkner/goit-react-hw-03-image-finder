@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import PropTypes from 'prop-types';
 import helpers from '../../helpers';
 
 import { SearchBar } from '../SearchBar/SearchBar';
@@ -10,29 +11,31 @@ import { Modal } from '../Modal/Modal';
 import { ContainerHTML } from './App.styled';
 
 export class App extends Component {
-  static propTypes = {};
-
-  // constructor(props) {
-  //   super(props);
-  //   this.page = null;
-  //   this.query = null;
-  // }
+  static propTypes = {
+    images: PropTypes.array,
+    query: PropTypes.string,
+    page: PropTypes.string,
+    isLoading: PropTypes.bool,
+    showModal: PropTypes.bool,
+    hasMoreImages: PropTypes.bool,
+    error: PropTypes.string,
+    largeImageURL: PropTypes.string,
+  };
 
   state = {
     images: [],
-    query: '',
-    page: 1,
+    query: null,
+    page: null,
     isLoading: false,
     showModal: false,
     hasMoreImages: false,
     error: null,
+    largeImageURL: null,
   };
 
   componentDidUpdate(prevProps, prevState) {
     const { query, page } = this.state;
-    console.log(prevState);
-    console.log(this.state);
-    if (prevState.query !== query || (prevState.page !== page && page !== 1)) {
+    if (prevState.query !== query || prevState.page !== page) {
       this.fetchImages();
     }
   }
@@ -40,9 +43,11 @@ export class App extends Component {
   fetchImages = async () => {
     const { query, page } = this.state;
 
-    this.setState({ isLoading: true });
-    this.setState({ hasMoreImages: false });
-    this.setState({ error: null });
+    this.setState({
+      isLoading: true,
+      hasMoreImages: false,
+      error: null,
+    });
 
     try {
       const { hits, totalPages } = await helpers.fetchImages(query, page);
@@ -56,7 +61,7 @@ export class App extends Component {
         }),
       });
 
-      this.setState({ hasMoreImages: this.page < totalPages });
+      this.setState({ hasMoreImages: page < totalPages });
     } catch (error) {
       this.setState({ error });
     } finally {
@@ -76,23 +81,25 @@ export class App extends Component {
       page: 1,
       error: null,
     });
-
-    this.fetchImages();
   };
 
   handleButtonClick = () => {
     this.setState(({ page }) => ({
-      page: (page += 1),
-      isLoading: true,
+      page: page + 1,
     }));
-    this.fetchImages();
   };
 
-  toggleModal = largeImageURL => {
-    this.setState(({ showModal }) => ({
-      showModal: !showModal,
-    }));
-    this.setState({ largeImageURL: largeImageURL });
+  handleImageClick = largeImageURL => {
+    this.setState({
+      largeImageURL: largeImageURL,
+      showModal: true,
+    });
+  };
+
+  handleModalClose = () => {
+    this.setState({
+      showModal: false,
+    });
   };
 
   render() {
@@ -112,21 +119,19 @@ export class App extends Component {
         {error && <p>{error.message}</p>}
 
         {isLoading ? (
-          <p>Loading...</p>
+          <Loader />
         ) : (
           <ImageGallery
             images={images}
-            onClick={this.toggleModal}
+            onClick={this.handleImageClick}
           ></ImageGallery>
         )}
 
         {hasMoreImages && <Button handleClick={this.handleButtonClick} />}
 
-        {isLoading && <Loader />}
-
         {showModal && (
-          <Modal onClose={this.toggleModal}>
-            <img src={largeImageURL} />
+          <Modal onClose={this.handleModalClose}>
+            <img src={largeImageURL} alt="" />
           </Modal>
         )}
       </ContainerHTML>
