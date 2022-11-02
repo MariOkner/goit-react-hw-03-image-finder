@@ -1,4 +1,10 @@
 import styled from '@emotion/styled';
+import { BiSearchAlt } from 'react-icons/bi';
+
+export const SearchIcon = styled(BiSearchAlt)`
+  width: 32px;
+  height: 32px;
+`;
 
 export const SearchBarHTML = styled.header`
   top: 0;

@@ -1,5 +1,4 @@
 import { Component } from 'react';
-import PropTypes from 'prop-types';
 import helpers from '../../helpers';
 
 import { SearchBar } from '../SearchBar/SearchBar';
@@ -8,29 +7,18 @@ import { Button } from '../Button/Button';
 import { Loader } from '../Loader/Loader';
 import { Modal } from '../Modal/Modal';
 
-import { ContainerHTML } from './App.styled';
+import { ContainerHTML, ErrorHTML } from './App.styled';
 
 export class App extends Component {
-  static propTypes = {
-    images: PropTypes.array,
-    query: PropTypes.string,
-    page: PropTypes.string,
-    isLoading: PropTypes.bool,
-    showModal: PropTypes.bool,
-    hasMoreImages: PropTypes.bool,
-    error: PropTypes.string,
-    largeImageURL: PropTypes.string,
-  };
-
   state = {
     images: [],
-    query: null,
-    page: null,
+    query: '',
+    page: 0,
     isLoading: false,
     showModal: false,
     hasMoreImages: false,
     error: null,
-    largeImageURL: null,
+    largeImageURL: '',
   };
 
   componentDidUpdate(prevProps, prevState) {
@@ -51,19 +39,20 @@ export class App extends Component {
 
     try {
       const { hits, totalPages } = await helpers.fetchImages(query, page);
-      this.setState({
-        images: hits.map(({ id, webformatURL, largeImageURL }) => {
-          return {
-            id: id,
-            smallImageURL: webformatURL,
-            largeImageURL: largeImageURL,
-          };
-        }),
+
+      if (!hits.length) {
+        throw new Error('No images');
+      }
+
+      this.setState(prevState => {
+        return {
+          images: [...prevState.images, ...hits],
+        };
       });
 
       this.setState({ hasMoreImages: page < totalPages });
     } catch (error) {
-      this.setState({ error });
+      this.setState({ error: error.message });
     } finally {
       this.setState({ isLoading: false });
     }
@@ -71,13 +60,13 @@ export class App extends Component {
 
   handleImageFormSubmit = query => {
     if (query.trim() === '') {
-      alert('Поле поиска пустое');
+      this.setState({ error: 'The search field is empty' });
       return;
     }
 
     this.setState({
       images: [],
-      query,
+      query: query,
       page: 1,
       error: null,
     });
@@ -116,11 +105,11 @@ export class App extends Component {
       <ContainerHTML>
         <SearchBar handleSubmit={this.handleImageFormSubmit}></SearchBar>
 
-        {error && <p>{error.message}</p>}
+        {error && <ErrorHTML>{error}</ErrorHTML>}
 
-        {isLoading ? (
-          <Loader />
-        ) : (
+        {isLoading && <Loader />}
+
+        {!error && (
           <ImageGallery
             images={images}
             onClick={this.handleImageClick}

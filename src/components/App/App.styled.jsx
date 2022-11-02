@@ -6,3 +6,7 @@ export const ContainerHTML = styled.div`
   grid-gap: 16px;
   padding-bottom: 24px;
 `;
+
+export const ErrorHTML = styled.h3`
+  text-align: center;
+`;

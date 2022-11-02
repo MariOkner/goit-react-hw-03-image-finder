@@ -1,5 +1,4 @@
 import PropTypes from 'prop-types';
-import { BiSearchAlt } from 'react-icons/bi';
 
 import {
   SearchBarHTML,
@@ -7,13 +6,17 @@ import {
   ButtonHTML,
   ButtonLabelHTML,
   InputHTML,
+  SearchIcon,
 } from './SearchBar.styled';
 
 export const SearchBar = ({ handleSubmit }) => {
   const onSubmit = event => {
     event.preventDefault();
+
     const form = event.currentTarget;
-    handleSubmit(form.elements.query.value);
+    const query = form.elements.query.value;
+
+    handleSubmit(query);
     form.reset();
   };
 
@@ -21,7 +24,7 @@ export const SearchBar = ({ handleSubmit }) => {
     <SearchBarHTML>
       <FormHTML onSubmit={onSubmit}>
         <ButtonHTML type="submit">
-          <BiSearchAlt style={{ width: 32, height: 32 }} />
+          <SearchIcon />
           <ButtonLabelHTML>Search</ButtonLabelHTML>
         </ButtonHTML>
 
